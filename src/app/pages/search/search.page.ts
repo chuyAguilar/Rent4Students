@@ -32,6 +32,9 @@ export class SearchPage implements OnInit {
     }));
   }
 
+  verDetalle(propiedad: any) {
+    this.navCtrl.navigateForward(['/detalle'], { state: { propiedad } });
+  }
 
   aplicarFiltros() {
     return this.propiedades.filter(p =>
