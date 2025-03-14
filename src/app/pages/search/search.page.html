@@ -38,7 +38,7 @@
   </div>
 
   <ion-list class="custom-list">
-    <ion-card *ngFor="let propiedad of aplicarFiltros()" class="custom-card" >
+    <ion-card *ngFor="let propiedad of aplicarFiltros()" class="custom-card" (click)="verDetalle(propiedad)">
       <ion-img [src]="propiedad.imagen" class="custom-img"></ion-img>
       <ion-card-header>
         <ion-card-title class="custom-title">

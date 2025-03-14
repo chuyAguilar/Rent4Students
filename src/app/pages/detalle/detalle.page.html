@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ propiedad.tipo ? (propiedad.tipo | uppercase) : 'PROPIEDAD' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="container">
+    <!-- Imagen -->
+    <div class="carousel-container" *ngIf="propiedad?.imagenes?.length > 0">
+      <button (click)="cambiarImagen(-1)" class="carousel-button">❮</button>
+      <img [src]="propiedad.imagenes[imagenActualIndex]" *ngIf="imagenActualIndex < propiedad.imagenes.length"
+        (error)="handleImageError()" />
+      <button (click)="cambiarImagen(1)" class="carousel-button">❯</button>
+    </div>
+
+    <!-- Tarjeta de información -->
+    <ion-card class="info-card">
+      <ion-card-content>
+        <h2>Servicios</h2>
+        <div class="servicios">
+          <div *ngFor="let servicio of propiedad.servicios">
+            <ion-icon *ngIf="servicio.icono" [name]="servicio.icono"></ion-icon>
+            {{ servicio.nombre }}
+          </div>
+        </div>
+
+        <h3>Especificaciones</h3>
+        <p>{{ propiedad.descripcion || 'Descripción no disponible' }}</p>
+
+        <div class="info">
+          <ion-icon name="location-outline"></ion-icon>
+          <p>{{ propiedad.direccion || 'Dirección no especificada' }}</p>
+        </div>
+
+        <h3>Total: <strong>${{ propiedad.precio || '0' }}/mes</strong></h3>
+
+        <!-- Botones -->
+        <div class="botones">
+          <ion-button (click)="rentar()">RENTAR</ion-button>
+       
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

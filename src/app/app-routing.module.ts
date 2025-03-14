@@ -22,13 +22,22 @@ const routes: Routes = [
   {
     path: 'register',
     loadChildren: () => import('./pages/register/register.module').then( m => m.RegisterPageModule)
-  },  {
+  },
+  {
     path: 'property-upload',
     loadChildren: () => import('./pages/property-upload/property-upload.module').then( m => m.PropertyUploadPageModule)
   },
   {
     path: 'search',
     loadChildren: () => import('./pages/search/search.module').then( m => m.SearchPageModule)
+  },
+  {
+    path: 'detalle',
+    loadChildren: () => import('./pages/detalle/detalle.module').then( m => m.DetallePageModule)
+  },
+  {
+    path: 'detalle',
+    loadChildren: () => import('./pages/detalle/detalle.module').then( m => m.DetallePageModule)
   },
 
 
