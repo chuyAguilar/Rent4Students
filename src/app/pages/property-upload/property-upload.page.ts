@@ -86,7 +86,17 @@ export class PropertyUploadPage {
     savedProperties.push(propertyData);
     localStorage.setItem('properties', JSON.stringify(savedProperties));
   
+    this.openModal();
     console.log('Propiedad publicada:', propertyData);
   }
   
+  openModal() {
+    const modal = document.getElementById('confirmationModal')!;
+    modal.style.display = 'flex';
+  }
+
+  closeModal() {
+    const modal = document.getElementById('confirmationModal')!;
+    modal.style.display = 'none';
+  }
 }
