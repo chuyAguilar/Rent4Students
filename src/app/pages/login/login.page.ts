@@ -8,11 +8,11 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
-  standalone: true,  // ✅ Es un componente standalone
-  imports: [CommonModule, IonicModule, FormsModule] // ✅ Importar módulos necesarios
+  standalone: true,  
+  imports: [CommonModule, IonicModule, FormsModule] 
 })
 export class LoginPage {
-  user: string = ''; // ✅ Agregado porque se usa en el formulario
+  user: string = ''; 
   email: string = '';
   password: string = '';
 
