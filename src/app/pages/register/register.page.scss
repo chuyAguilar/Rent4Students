@@ -11,6 +11,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100vh;
 }
 
 .register-card {
@@ -78,5 +79,19 @@ ion-alert .alert-head {
 
   h1 {
     font-size: 1.75rem;
+  }
+  ion-item {
+    --border-radius: 8px; 
+    margin-bottom: 10px;
+  }
+  //Ajuste
+  @media (max-width: 600px) {
+    .register-card {
+      padding: 15px;
+    }
+  
+    .login-text {
+      font-size: 0.8rem;
+    }
   }
 }
