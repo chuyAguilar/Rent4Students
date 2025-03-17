@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule, NavController } from '@ionic/angular';
+import { IonicModule, NavController, LoadingController } from '@ionic/angular';
 import { AuthService } from '../../../services/auth.service';
 import { FormsModule } from '@angular/forms';
 
@@ -18,7 +18,7 @@ export class RegisterPage {
   confirmPassword: string = '';
   userType: string = '';
 
-  constructor(private navCtrl: NavController, private authService: AuthService) {}
+  constructor(private navCtrl: NavController, private authService: AuthService, private loadingController: LoadingController) {}
 
   async register() {
     if (!this.user || !this.email || !this.password || !this.confirmPassword || !this.userType) {
@@ -35,16 +35,27 @@ export class RegisterPage {
       alert('Las contraseñas no coinciden');
       return;
     }
+
+    const loading = await this.loadingController.create({
+      message: 'Registrando usuario...',
+      spinner: 'bubbles', 
+      cssClass: 'custom-spinner' 
+    });
+    
+
+    await loading.present();
   
     try {
       const userCredential = await this.authService.register(this.email, this.password, this.userType, this.user);
       if (userCredential) {
         console.log('Usuario registrado:', userCredential);
-        alert('Registro exitoso');
+        //alert('Registro exitoso');
         this.navCtrl.navigateForward('/login');
       }
     } catch (error) {
       alert('Error en el registro: ' + (error as any).message);
+    }finally {
+      await loading.dismiss(); 
     }
   }
   
