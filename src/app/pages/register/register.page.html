@@ -37,7 +37,7 @@
         <ion-button expand="full" color="success" (click)="register()" [disabled]="!isFormValid">CREAR CUENTA</ion-button>
         
         <ion-text class="login-text">
-          ¿Ya tienes cuenta? <a href="/login">Inicia sesión</a>
+          ¿Ya tienes cuenta? <span (click)="navigateToLogin()">Inicia sesión</span>
         </ion-text>
       </ion-card-content>
     </ion-card>

@@ -29,11 +29,33 @@
 }
 
 .custom-spinner .loading-wrapper {
-  background: rgba(0, 0, 0, 0.8); /* Fondo oscuro */
-  color: white; /* Letras en blanco */
+  background: rgba(0, 0, 0, 0.8);
+  color: white; 
   border-radius: 10px;
 }
 
 .custom-spinner .loading-spinner {
-  --color: #FFD700; /* Cambia el color del spinner */
+  --color: #FFD700; 
 }
+
+ion-alert .alert-head {
+  background-color: #ff3b30; 
+  color: white;
+}
+.login-text {
+  display: block;
+  text-align: center;
+  margin-top: 16px;
+  
+  span {
+    color: #007bff; 
+    text-decoration: underline; 
+    cursor: pointer; 
+    font-weight: 600; 
+  }
+
+  span:hover {
+    color: #0056b3; 
+  }
+}
+
