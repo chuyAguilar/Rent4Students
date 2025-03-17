@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule, NavController } from '@ionic/angular';
+import { IonicModule, NavController, LoadingController } from '@ionic/angular';
 import { AuthService } from '../../../services/auth.service';
 import { FormsModule } from '@angular/forms';
 
@@ -16,7 +16,7 @@ export class LoginPage {
   email: string = '';
   password: string = '';
 
-  constructor(private navCtrl: NavController, private authService: AuthService) {}
+  constructor(private navCtrl: NavController, private authService: AuthService, private loadingController: LoadingController) {}
 
   async login() {
     if (!this.user || !this.password) {
@@ -29,6 +29,15 @@ export class LoginPage {
       alert('El formato del correo no es válido.');
       return;
     }
+
+    const loading = await this.loadingController.create({
+      message: 'Iniciando sesión...',
+      spinner: 'bubbles', 
+      cssClass: 'custom-spinner' 
+    });
+    
+
+    await loading.present();
   
     try {
       const userCredential = await this.authService.login(this.user.trim(), this.password);
@@ -54,6 +63,8 @@ export class LoginPage {
       }
     } catch (error) {
       alert('Error en el login: ' + (error as any).message);
+    }finally {
+      await loading.dismiss(); 
     }
   }
   
