@@ -18,6 +18,8 @@ export class RegisterPage {
   confirmPassword: string = '';
   userType: string = '';
   isFormValid: boolean = false;
+  passwordType: string = 'password';
+  confirmPasswordType: string = 'password';
 
   constructor(private navCtrl: NavController, private authService: AuthService, private loadingController: LoadingController, private alertController: AlertController) {}
 
@@ -29,6 +31,13 @@ export class RegisterPage {
       this.confirmPassword.trim() !== '' &&
       this.userType.trim() !== '' &&
       this.password === this.confirmPassword;
+  }
+  togglePasswordVisibility(field: string) {
+    if (field === 'password') {
+      this.passwordType = this.passwordType === 'password' ? 'text' : 'password';
+    } else if (field === 'confirmPassword') {
+      this.confirmPasswordType = this.confirmPasswordType === 'password' ? 'text' : 'password';
+    }
   }
 
   async showErrorAlert(message: string) {
