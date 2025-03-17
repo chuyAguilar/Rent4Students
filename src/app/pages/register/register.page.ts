@@ -17,14 +17,29 @@ export class RegisterPage {
   password: string = '';
   confirmPassword: string = '';
   userType: string = '';
+  isFormValid: boolean = false;
 
   constructor(private navCtrl: NavController, private authService: AuthService, private loadingController: LoadingController) {}
 
+  validateForm() {
+    this.isFormValid = 
+      this.user.trim() !== '' &&
+      this.email.trim() !== '' &&
+      this.password.trim() !== '' &&
+      this.confirmPassword.trim() !== '' &&
+      this.userType.trim() !== '' &&
+      this.password.length >= 6 &&
+      this.password === this.confirmPassword;
+  }
+
   async register() {
-    if (!this.user || !this.email || !this.password || !this.confirmPassword || !this.userType) {
-      alert('Todos los campos son obligatorios');
-      return;
-    }
+
+    if (!this.isFormValid) return;
+
+    // if (!this.user || !this.email || !this.password || !this.confirmPassword || !this.userType) {
+    //   alert('Todos los campos son obligatorios');
+    //   return;
+    // }
   
     if (this.password.length < 6) {
       alert('La contraseña debe tener al menos 6 caracteres');
