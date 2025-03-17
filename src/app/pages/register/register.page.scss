@@ -59,3 +59,24 @@ ion-alert .alert-head {
   }
 }
 
+@media (min-width: 768px) and (max-width: 1024px) {
+  .register-card {
+    max-width: 80%;
+    padding: 18px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 1025px) {
+  .register-card {
+    max-width: 400px;
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+  }
+}
