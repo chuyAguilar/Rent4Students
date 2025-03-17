@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule, NavController, LoadingController } from '@ionic/angular';
+import { IonicModule, NavController, LoadingController, AlertController } from '@ionic/angular';
 import { AuthService } from '../../../services/auth.service';
 import { FormsModule } from '@angular/forms';
 
@@ -16,7 +16,7 @@ export class LoginPage {
   password: string = '';
   isFormValid: boolean = false;
 
-  constructor(private navCtrl: NavController, private authService: AuthService, private loadingController: LoadingController) {}
+  constructor(private navCtrl: NavController, private authService: AuthService, private loadingController: LoadingController, private alertController: AlertController) {}
 
   validateForm() {
     this.isFormValid = 
@@ -24,14 +24,23 @@ export class LoginPage {
       this.password.trim() !== '';
   }
 
+  async showErrorAlert(message: string) {
+    const alert = await this.alertController.create({
+      header: 'Error',
+      message: message,
+      buttons: ['Aceptar']
+    });
+    await alert.present();
+  }
+
   async login() {
     if (!this.isFormValid) {
-      alert('Por favor, completa todos los campos correctamente.');
+      this.showErrorAlert('Por favor, completa todos los campos correctamente.');
       return; 
     }
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     if (!emailPattern.test(this.user)) {
-      alert('El formato del correo no es válido.');
+      this.showErrorAlert('El formato del correo no es válido.');
       return;
     }
 
@@ -60,14 +69,14 @@ export class LoginPage {
           } else if (userData['userType'] === 'quiero-rentar') {
             this.navCtrl.navigateForward('/search'); // Página para estudiantes
           } else {
-            alert('Rol de usuario no válido.');
+            this.showErrorAlert('Rol de usuario no válido.');
           }
         } else {
-          alert('No se encontraron datos del usuario.');
+          this.showErrorAlert('No se encontraron datos del usuario.');
         }
       }
     } catch (error) {
-      alert('Error en el login: ' + (error as any).message);
+      this.showErrorAlert('Email y/o password incorrectos');
     }finally {
       await loading.dismiss(); 
     }
