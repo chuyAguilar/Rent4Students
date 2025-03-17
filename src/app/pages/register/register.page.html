@@ -9,35 +9,35 @@
       <ion-card-content>
         <ion-item>
           <ion-icon name="person-outline" slot="start"></ion-icon>
-          <ion-input [(ngModel)]="user" placeholder="Usuario"></ion-input>
+          <ion-input [(ngModel)]="user" (ionInput)="validateForm()" placeholder="Usuario"></ion-input>
         </ion-item>
         
         <ion-item>
           <ion-icon name="mail-outline" slot="start"></ion-icon>
-          <ion-input [(ngModel)]="email" placeholder="Correo"></ion-input>
+          <ion-input [(ngModel)]="email" (ionInput)="validateForm()" placeholder="Correo"></ion-input>
         </ion-item>
         
         <ion-item>
           <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
-          <ion-input [(ngModel)]="password" type="password" placeholder="Contraseña"></ion-input>
+          <ion-input [(ngModel)]="password" (ionInput)="validateForm()" type="password" placeholder="Contraseña"></ion-input>
         </ion-item>
         
         <ion-item>
           <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
-          <ion-input [(ngModel)]="confirmPassword" type="password" placeholder="Confirmar contraseña"></ion-input>
+          <ion-input [(ngModel)]="confirmPassword" (ionInput)="validateForm()" type="password" placeholder="Confirmar contraseña"></ion-input>
         </ion-item>
         
         <ion-item>
-          <ion-select [(ngModel)]="userType" placeholder="Seleccionar rol">
+          <ion-select [(ngModel)]="userType" (ionChange)="validateForm()" placeholder="Seleccionar rol">
             <ion-select-option value="propietario">Propietario</ion-select-option>
             <ion-select-option value="quiero-rentar">Quiero rentar (Estudiante)</ion-select-option>
           </ion-select>
         </ion-item>
 
-        <ion-button expand="full" color="success" (click)="register()">CREAR CUENTA</ion-button>
+        <ion-button expand="full" color="success" (click)="register()" [disabled]="!isFormValid">CREAR CUENTA</ion-button>
         
         <ion-text class="login-text">
-          ¿Ya tienes cuenta? <a href="/login">Inicia sesión</a>
+          ¿Ya tienes cuenta? <span (click)="navigateToLogin()">Inicia sesión</span>
         </ion-text>
       </ion-card-content>
     </ion-card>
