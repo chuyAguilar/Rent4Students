@@ -19,7 +19,7 @@
 
         <ion-button expand="full" color="success" [disabled]="!isFormValid" (click)="login()">INGRESAR</ion-button>
         <ion-text class="register-text">
-          ¿No tienes cuenta? <a href="/register">Regístrate</a>
+          ¿No tienes cuenta? <span (click)="navigateToRegister()">Regístrate</span>
         </ion-text>
       </ion-card-content>
     </ion-card>

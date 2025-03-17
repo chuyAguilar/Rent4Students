@@ -31,3 +31,21 @@
   .custom-spinner .loading-spinner {
     --color: #FFD700; 
   }
+
+  .register-text {
+    display: block;
+    text-align: center;
+    margin-top: 16px;
+    
+    span {
+      color: #007bff; 
+      text-decoration: underline; 
+      cursor: pointer; 
+      font-weight: 600; 
+    }
+  
+    span:hover {
+      color: #0056b3; 
+    }
+  }
+ 
