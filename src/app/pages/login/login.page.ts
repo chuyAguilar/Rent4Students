@@ -13,17 +13,22 @@ import { FormsModule } from '@angular/forms';
 })
 export class LoginPage {
   user: string = ''; 
-  email: string = '';
   password: string = '';
+  isFormValid: boolean = false;
 
   constructor(private navCtrl: NavController, private authService: AuthService, private loadingController: LoadingController) {}
 
+  validateForm() {
+    this.isFormValid = 
+      this.user.trim() !== '' &&
+      this.password.trim() !== '';
+  }
+
   async login() {
-    if (!this.user || !this.password) {
-      alert('Por favor, ingresa tu correo y contraseña.');
-      return;
+    if (!this.isFormValid) {
+      alert('Por favor, completa todos los campos correctamente.');
+      return; 
     }
-  
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     if (!emailPattern.test(this.user)) {
       alert('El formato del correo no es válido.');
