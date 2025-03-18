@@ -56,6 +56,22 @@ export class AuthService {
     }
   }
 
+  // 🔹 Obtener propiedad por ID desde Firestore
+  async getPropertyById(propertyId: string) {
+    try {
+      const propertyDocRef = doc(this.firestore, `properties/${propertyId}`);
+      const propertyDoc = await getDoc(propertyDocRef);
+      if (propertyDoc.exists()) {
+        return propertyDoc.data(); // Retorna los datos de la propiedad
+      } else {
+        return null; // Si no se encuentra la propiedad
+      }
+    } catch (error) {
+      console.error('Error obteniendo la propiedad:', error);
+      return null;
+    }
+  }
+
   // 🔹 Cerrar sesión
   async logout() {
     await signOut(this.auth);
