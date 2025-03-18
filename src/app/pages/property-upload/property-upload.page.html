@@ -115,7 +115,7 @@
           </div>
         </div>
 
-        <ion-button expand="full" color="success" (click)="publish()">VALIDAR Y PUBLICAR</ion-button>
+        <ion-button [disabled]="!isFormValid()" expand="full" color="success" (click)="publish()">VALIDAR Y PUBLICAR</ion-button>
       </div>
     </ion-card-content>
   </ion-card>
