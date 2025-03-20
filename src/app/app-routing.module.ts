@@ -22,7 +22,8 @@ const routes: Routes = [
   {
     path: 'register',
     loadChildren: () => import('./pages/register/register.module').then( m => m.RegisterPageModule)
-  },  {
+  },
+  {
     path: 'property-upload',
     loadChildren: () => import('./pages/property-upload/property-upload.module').then( m => m.PropertyUploadPageModule)
   },
@@ -31,9 +32,25 @@ const routes: Routes = [
     loadChildren: () => import('./pages/search/search.module').then( m => m.SearchPageModule)
   },
   {
+    path: 'detalle',
+    loadChildren: () => import('./pages/detalle/detalle.module').then( m => m.DetallePageModule)
+  },
+  {
+    path: 'detalle',
+    loadChildren: () => import('./pages/detalle/detalle.module').then( m => m.DetallePageModule)
+  },  {
+    path: 'solicitarvisita',
+    loadChildren: () => import('./pages/solicitarvisita/solicitarvisita.module').then( m => m.SolicitarvisitaPageModule)
+  },
+  {
+    path: 'contrato',
+    loadChildren: () => import('./pages/contrato/contrato.module').then( m => m.ContratoPageModule)
+  },
+  {
     path: 'validar-identidad',
     loadChildren: () => import('./pages/validar-identidad/validar-identidad.module').then( m => m.ValidarIdentidadPageModule)
   },
+
 
 
 

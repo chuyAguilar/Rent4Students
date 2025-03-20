@@ -1,48 +1,108 @@
 import { Component } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { CommonModule } from '@angular/common';
+import { IonicModule, NavController, LoadingController, AlertController } from '@ionic/angular';
+import { AuthService } from '../../../services/auth.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
   styleUrls: ['./register.page.scss'],
-  standalone: false
+  standalone: true,  // ✅ Indica que es un componente standalone
+  imports: [CommonModule, IonicModule, FormsModule] // ✅ Importar módulos necesarios
 })
 export class RegisterPage {
-  userType: string = '';
   user: string = '';
   email: string = '';
   password: string = '';
   confirmPassword: string = '';
+  userType: string = '';
+  isFormValid: boolean = false;
+  passwordType: string = 'password';
+  confirmPasswordType: string = 'password';
 
-  constructor(private navCtrl: NavController) {}
+  constructor(private navCtrl: NavController, private authService: AuthService, private loadingController: LoadingController, private alertController: AlertController) {}
 
-  register() {
-    console.log('User:', this.user);
-    console.log('Email:', this.email);
-    console.log('Password:', this.password);
-    console.log('Confirm Password:', this.confirmPassword);
-    console.log('UserType:', this.userType);
-  
-    if (!this.user || !this.email || !this.password || !this.confirmPassword || !this.userType) {
-      alert('Todos los campos son obligatorios');
+  validateForm() {
+    this.isFormValid = 
+      this.user.trim() !== '' &&
+      this.email.trim() !== '' &&
+      this.password.trim() !== '' &&
+      this.confirmPassword.trim() !== '' &&
+      this.userType.trim() !== '' &&
+      this.password === this.confirmPassword;
+  }
+  togglePasswordVisibility(field: string) {
+    if (field === 'password') {
+      this.passwordType = this.passwordType === 'password' ? 'text' : 'password';
+    } else if (field === 'confirmPassword') {
+      this.confirmPasswordType = this.confirmPasswordType === 'password' ? 'text' : 'password';
+    }
+  }
+
+  async showErrorAlert(message: string) {
+    const alert = await this.alertController.create({
+      header: 'Error',
+      message: message,
+      buttons: ['Aceptar']
+    });
+    await alert.present();
+  }
+
+  async checkEmailExists(email: string): Promise<boolean> {
+    try {
+      const user = await this.authService.login(email, this.password);
+      return user !== null; 
+    } catch (error) {
+      return false; 
+    }
+  }
+
+
+  async register() {
+
+    if (!this.isFormValid) {
+      this.showErrorAlert('Por favor, completa todos los campos correctamente.');
+      return; 
+    }
+
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(this.password)) {
+      this.showErrorAlert('La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.');
       return;
     }
-  
-    if (this.password !== this.confirmPassword) {
-      alert('Las contraseñas no coinciden');
+
+    const emailExists = await this.checkEmailExists(this.email);
+    if (emailExists) {
+      this.showErrorAlert('El correo electrónico ya está en uso.');
       return;
     }
+
+    
+    const loading = await this.loadingController.create({
+      message: 'Registrando usuario...',
+      spinner: 'bubbles', 
+      cssClass: 'custom-spinner' 
+    });
+    
+
+    await loading.present();
   
-    // Guardar en localStorage
-    localStorage.setItem('user', JSON.stringify({
-      user: this.user,
-      email: this.email,
-      password: this.password,
-      userType: this.userType
-    }));
-  
-    //alert('Registro exitoso, ahora puedes iniciar sesión');
+    try {
+      const userCredential = await this.authService.register(this.email, this.password, this.userType, this.user);
+      if (userCredential) {
+        console.log('Usuario registrado:', userCredential);
+        //alert('Registro exitoso');
+        setTimeout(() => {
+          this.navCtrl.navigateForward('/login');
+        }, 500);
+      }
+    } catch (error) {
+      this.showErrorAlert('Error en el registro: ' + (error as any).message);
+    }finally {
+      await loading.dismiss(); 
+    }
+  }
+  navigateToLogin() {
     this.navCtrl.navigateForward('/login');
   }
-  
 }
