@@ -50,6 +50,10 @@ const routes: Routes = [
     path: 'validar-identidad',
     loadChildren: () => import('./pages/validar-identidad/validar-identidad.module').then( m => m.ValidarIdentidadPageModule)
   },
+  {
+    path: 'metododepago',
+    loadChildren: () => import('./pages/metododepago/metododepago.module').then( m => m.MetododepagoPageModule)
+  },
 
 
 
