@@ -8,6 +8,7 @@
   <div class="container">
     <ion-card class="info-card">
       <ion-card-content>
+
         <h2 class="titulo">Servicios</h2>
         <ion-grid>
           <ion-row>
@@ -21,7 +22,7 @@
         </ion-grid>
 
         <h3 class="titulo">Especificaciones</h3>
-        <p>{{ propiedad.descripcion || 'Descripción no disponible' }}</p>
+        <p>{{ propiedad.especificaciones_adicionales || 'Descripción no disponible' }}</p>
 
         <div class="info">
           <ion-icon name="location-outline"></ion-icon>
@@ -30,7 +31,9 @@
 
         <h3 class="titulo">Total: <strong>${{ propiedad.precio || '0' }}/mes</strong></h3>
 
-        <ion-button expand="full" color="primary" (click)="solicitarVisita()">Solicitar Visita</ion-button>
+        <ion-button expand="full" color="primary" (click)="solicitarVisita()">
+          Solicitar Visita
+        </ion-button>
 
         <div *ngIf="mostrarFormulario">
           <ion-item>
@@ -52,8 +55,11 @@
             </ion-datetime>
           </ion-item>
 
-          <ion-button expand="full" color="success" (click)="confirmarCita()">Confirmar</ion-button>
+          <ion-button expand="full" color="success" (click)="confirmarCita()">
+            Confirmar
+          </ion-button>
         </div>
+
       </ion-card-content>
     </ion-card>
   </div>

@@ -62,16 +62,22 @@ export class DetallePage implements OnInit {
         {
           text: 'Sí, agendar cita',
           handler: () => {
-            this.navCtrl.navigateForward('/solicitarvisita');
+            console.log('ID enviado a solicitarvisita:', this.propiedad.id);
+            this.navCtrl.navigateForward(['/solicitarvisita'], {
+              queryParams: { id: this.propiedad.id }
+            });
           }
         },
         {
           text: 'No, ir al contrato',
           handler: () => {
-            this.navCtrl.navigateForward('/contrato');
+            console.log('ID enviado a contrato:', this.propiedad.id);
+            this.navCtrl.navigateForward(['/contrato'], {
+              queryParams: { id: this.propiedad.id }
+            });
           }
         }
-      ]
+      ]      
     });
     await alert.present();
   }

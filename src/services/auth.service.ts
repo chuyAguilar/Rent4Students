@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, User } from '@angular/fire/auth';
-import { Firestore, doc, setDoc, getDoc } from '@angular/fire/firestore';
+import { Firestore, doc, setDoc, getDoc, addDoc, collection } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -72,9 +72,34 @@ export class AuthService {
     }
   }
 
+  // 🔹 Función para crear una cita
+  async createCita(ownerId: string, userId: string, fecha: string, hora: string) {
+    try {
+      // Estructura de datos para la cita
+      const citaData = {
+        ownerId,
+        userId,
+        fecha,
+        hora,
+        status: 'pendiente' // status por defecto
+      };
+
+      // Usamos addDoc para generar un ID automático
+      const docRef = await addDoc(collection(this.firestore, 'citas'), citaData);
+
+      // Retornamos el ID generado por Firestore (opcional, en caso de que quieras usarlo)
+      return docRef.id;
+    } catch (error) {
+      console.error('Error al crear la cita:', error);
+      throw error;
+    }
+  }
+
   // 🔹 Cerrar sesión
   async logout() {
     await signOut(this.auth);
     this.router.navigate(['/login']);
   }
 }
+// Removed the incorrect addDoc and collection function implementations
+

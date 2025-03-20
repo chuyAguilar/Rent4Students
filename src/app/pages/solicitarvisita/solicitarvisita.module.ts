@@ -8,6 +8,17 @@ import { SolicitarvisitaPageRoutingModule } from './solicitarvisita-routing.modu
 
 import { SolicitarvisitaPage } from './solicitarvisita.page';
 
+import { Routes } from '@angular/router';
+
+export const routes: Routes = [
+  {
+    path: '',
+    loadComponent: () =>
+      import('./solicitarvisita.page').then(m => m.SolicitarvisitaPage)
+  }
+];
+
+
 @NgModule({
   imports: [
     CommonModule,
@@ -15,6 +26,6 @@ import { SolicitarvisitaPage } from './solicitarvisita.page';
     IonicModule,
     SolicitarvisitaPageRoutingModule
   ],
-  declarations: [SolicitarvisitaPage]
+  // declarations: [SolicitarvisitaPage]
 })
 export class SolicitarvisitaPageModule {}
