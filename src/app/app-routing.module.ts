@@ -30,6 +30,10 @@ const routes: Routes = [
     path: 'search',
     loadChildren: () => import('./pages/search/search.module').then( m => m.SearchPageModule)
   },
+  {
+    path: 'validar-identidad',
+    loadChildren: () => import('./pages/validar-identidad/validar-identidad.module').then( m => m.ValidarIdentidadPageModule)
+  },
 
 
 
