@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Contrato de Arrendamiento</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <h2>Contrato de Arrendamiento</h2>
+
+  <p><strong>PRIMERA. PARTES DEL CONTRATO</strong></p>
+  <p>En la Ciudad de Querétaro, a [Fecha], comparecen por una parte el Sr./Sra. [Nombre del Arrendador], en su calidad de <strong>ARRENDADOR</strong>, y por otra parte el Sr./Sra. [Nombre del Arrendatario], en su calidad de <strong>ARRENDATARIO</strong>. Ambas partes se reconocen la capacidad legal para celebrar el presente contrato.</p>
+
+  <p><strong>SEGUNDA. OBJETO DEL CONTRATO</strong></p>
+  <p>El ARRENDADOR da en arrendamiento al ARRENDATARIO el inmueble ubicado en [Dirección del Inmueble], el cual será destinado exclusivamente para [uso habitacional/comercial].</p>
+
+  <p><strong>TERCERA. DURACIÓN DEL CONTRATO</strong></p>
+  <p>El contrato tendrá una duración de [Duración del Contrato] meses/años, iniciando el día [Fecha de Inicio] y finalizando el día [Fecha de Terminación].</p>
+
+  <p><strong>CUARTA. RENTA Y FORMA DE PAGO</strong></p>
+  <p>El ARRENDATARIO pagará al ARRENDADOR la cantidad de $[Monto de la Renta] ([Cantidad en Letras]) mensualmente, dentro de los primeros [Número de Días] días de cada mes, mediante [Método de Pago].</p>
+
+  <p><strong>QUINTA. DEPÓSITO EN GARANTÍA</strong></p>
+  <p>El ARRENDATARIO entrega en este acto la cantidad de $[Monto del Depósito] como depósito en garantía, el cual será devuelto al finalizar el contrato si no existen daños en el inmueble.</p>
+
+  <p><strong>SEXTA. OBLIGACIONES DEL ARRENDADOR</strong></p>
+  <ul>
+    <li>Garantizar el uso pacífico del inmueble.</li>
+    <li>Mantener en buen estado las instalaciones principales del inmueble.</li>
+  </ul>
+
+  <p><strong>SÉPTIMA. OBLIGACIONES DEL ARRENDATARIO</strong></p>
+  <ul>
+    <li>Pagar puntualmente la renta.</li>
+    <li>Conservar en buen estado el inmueble y sus instalaciones.</li>
+    <li>No subarrendar ni ceder el uso del inmueble sin autorización del ARRENDADOR.</li>
+  </ul>
+
+  <p><strong>OCTAVA. CAUSAS DE TERMINACIÓN</strong></p>
+  <ul>
+    <li>Incumplimiento en el pago de la renta por más de [Número de Meses] meses.</li>
+    <li>Daños graves al inmueble por parte del ARRENDATARIO.</li>
+    <li>Uso distinto al pactado en el contrato.</li>
+  </ul>
+
+  <p><strong>NOVENA. JURISDICCIÓN Y LEY APLICABLE</strong></p>
+  <p>Para todo lo no previsto en este contrato, ambas partes se someten a las leyes de México y a la jurisdicción de los tribunales de Querétaro.</p>
+
+  <p><strong>En prueba de conformidad, firman ambas partes en Querétaro, [Fecha]:</strong></p>
+
+  <p><strong>EL ARRENDADOR</strong></p>
+  <canvas #signaturePad id="signature-pad" width="300" height="150" style="border: 1px solid #000; cursor: crosshair;"></canvas>
+  <ion-button expand="block" (click)="clearSignature()">Borrar Firma</ion-button>  
+
+  <p><strong>EL ARRENDATARIO</strong> <br> [Nombre y Firma] </p>
+
+  <ion-item lines="none">
+    <ion-checkbox slot="start"></ion-checkbox>
+    <ion-label>Acepto los términos del contrato</ion-label>
+  </ion-item>
+
+  <ion-button expand="full" (click)="siguiente()" [disabled]="!firmaRealizada">Siguiente</ion-button>
+</ion-content>
+
