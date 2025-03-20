@@ -46,6 +46,10 @@ const routes: Routes = [
     path: 'contrato',
     loadChildren: () => import('./pages/contrato/contrato.module').then( m => m.ContratoPageModule)
   },
+  {
+    path: 'validar-identidad',
+    loadChildren: () => import('./pages/validar-identidad/validar-identidad.module').then( m => m.ValidarIdentidadPageModule)
+  },
 
 
 
