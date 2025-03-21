@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { NavController, LoadingController } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { runInInjectionContext, Injector } from '@angular/core';
@@ -21,14 +21,24 @@ export class SearchPage implements OnInit {
     private navCtrl: NavController,
     private afs: AngularFirestore,
     private afAuth: AngularFireAuth,
-    private injector: Injector
+    private injector: Injector,
+    private loadingController: LoadingController
   ) {}
 
   ngOnInit() {
     this.cargarPropiedades();
   }
 
-  cargarPropiedades(): void {
+  async cargarPropiedades(): Promise<void> {
+
+    const loading = await this.loadingController.create({
+      spinner: 'bubbles',  // Spinner de tipo bubbles
+      message: 'Cargando propiedades...',
+      translucent: true,
+      cssClass: 'custom-loading'  // Clase personalizada si deseas estilizar el spinner
+    });
+    await loading.present();
+
     // Usamos runInInjectionContext para asegurar el contexto de inyección
     runInInjectionContext(this.injector, () => {
       this.afs.collection('properties')
@@ -37,16 +47,14 @@ export class SearchPage implements OnInit {
           this.propiedades = properties.map(p => ({
             ...p, // Copia todos los campos originales (incluido el id gracias a valueChanges)
             // Forzamos un precio numérico si 'especificaciones_adicionales' contiene "precio:xxxx"
-            precio: (typeof p.especificaciones_adicionales === 'string' &&
-                      p.especificaciones_adicionales.includes('precio'))
-                      ? parseInt(p.especificaciones_adicionales.split(':')[1]) || 5000
-                      : 5000,
+            precio: p.precio || 5000,
             distancia: Math.random() * 10,
             imagen: (p.imagenes && p.imagenes.length > 0)
                       ? p.imagenes[0]
                       : 'assets/casa.png'
           }));
           console.log('Propiedades cargadas:', this.propiedades);
+          loading.dismiss(); 
         });
     });
   }
