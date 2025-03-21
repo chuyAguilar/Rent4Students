@@ -35,23 +35,19 @@
           </ion-radio-group>
         </ion-item>
 
-        <ion-item>
-          <ion-label position="stacked">Ubicación</ion-label>
-          <div class="map-container">
-            <iframe 
-            width="100%" 
-            height="300px" 
-            frameborder="0" 
-            style="border:0" 
-            referrerpolicy="no-referrer-when-downgrade"
-            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCFBJ7H1y-gK9mGqCaTOicbHmD0hcd5jYQ&q=Querétaro,México" 
-            allowfullscreen>
-          </iframe>
-          
-          </div>
-        </ion-item>
+        
+        <!-- Aquí va el mapa -->
+        <div id="map" style="height: 400px;"></div>
+        
+
+        
 
         <h2>ESPECIFICACIONES</h2>
+
+        <ion-item>
+          <ion-label position="stacked">Precio</ion-label>
+          <ion-input type="number" [(ngModel)]="price" placeholder="Ingresa el precio de la propiedad" required></ion-input>
+        </ion-item>
 
         <ion-item>
           <ion-label>Habitaciones:</ion-label>
