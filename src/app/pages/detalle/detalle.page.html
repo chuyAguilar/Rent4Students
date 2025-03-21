@@ -38,15 +38,14 @@
         <p><strong>Estacionamiento:</strong> {{ propiedad.estacionamiento || 'No especificado' }}</p>
         <p><strong>Descripcion:</strong> {{ propiedad.especificaciones_adicionales || 'No disponible' }}</p>
 
-        <div class="info">
-          <ion-icon name="location-outline"></ion-icon>
-          <p><strong>Ubicacion:</strong> {{ propiedad.direccion || 'No especificada' }}</p>
-        </div>
+
 
         <h3>
           Total:
           <strong>${{ propiedad.precio || '0' }}/mes</strong>
         </h3>
+
+        <div id="map" style="height: 300px; width: 100%;"></div>
 
         <div class="botones">
           <ion-button (click)="rentar()">RENTAR</ion-button>

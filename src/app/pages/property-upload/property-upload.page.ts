@@ -1,18 +1,19 @@
-import { Component, runInInjectionContext, Injector } from '@angular/core';
+import { Component, runInInjectionContext, Injector, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { NavController, AlertController, LoadingController } from '@ionic/angular';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 
-
+declare var google: any;
 @Component({
   selector: 'app-property-upload',
   templateUrl: './property-upload.page.html',
   styleUrls: ['./property-upload.page.scss'],
   standalone: false
 })
-export class PropertyUploadPage {
+export class PropertyUploadPage implements AfterViewInit{
+  
   // URL para mostrar el mapa (opcional)
-  googleMapUrl: string = 'https://www.google.com/maps/embed/v1/place?key=AIzaSyAeAPQEqCfKYwd8C6ZewS_amcJ7Xm6RDvA&q=Querétaro,México';
+  //googleMapUrl: string = 'https://www.google.com/maps/embed/v1/place?key=AIzaSyAeAPQEqCfKYwd8C6ZewS_amcJ7Xm6RDvA&q=Querétaro,México';
 
   // Variables vinculadas al formulario
   propertyType: string = '';
@@ -20,6 +21,7 @@ export class PropertyUploadPage {
   bathrooms: number = 1;
   parking: number = 0;
   additionalSpecs: string = '';
+  price: number | null = null;
 
   // Servicios disponibles
   water: boolean = false;
@@ -36,6 +38,17 @@ export class PropertyUploadPage {
   // Imágenes de la propiedad
   propertyImages: string[] = [];
 
+
+  @ViewChild('addressInput', { static: false }) addressInputRef: ElementRef = {} as ElementRef;
+
+
+  address: string = '';
+  autocomplete: any;
+  latitude: number | null = null;
+  longitude: number | null = null;
+  map: any;
+  marker: any;
+
   constructor(
     private navCtrl: NavController,
     private afs: AngularFirestore,
@@ -45,6 +58,35 @@ export class PropertyUploadPage {
     private loadingController: LoadingController
   ) {}
 
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.initMap();
+    }, 500); // Retrasar la inicialización para asegurar que el mapa esté listo
+  }
+
+  initMap() {
+    const mapElement = document.getElementById('map')!;
+    this.map = new google.maps.Map(mapElement, {
+      center: { lat: 20.5937, lng: -100.4261 }, // Querétaro por defecto
+      zoom: 14,
+    });
+
+    // Crear un marcador para la ubicación seleccionada
+    this.marker = new google.maps.Marker({
+      position: { lat: 20.5937, lng: -100.4261 }, // Querétaro por defecto
+      map: this.map,
+      title: "Ubicación de la propiedad"
+    });
+
+    // Escuchar el evento de clic en el mapa para seleccionar la ubicación
+    google.maps.event.addListener(this.map, 'click', (event: any) => {
+      this.latitude = event.latLng.lat();
+      this.longitude = event.latLng.lng();
+
+      this.marker.setPosition(event.latLng); // Mover el marcador a la nueva ubicación
+      this.map.setCenter(event.latLng); // Centrar el mapa en la nueva ubicación
+    });
+  }
 
   isFormValid(): boolean {
     return (
@@ -55,7 +97,9 @@ export class PropertyUploadPage {
       this.additionalSpecs.trim() !== '' &&
       this.documentPreview !== null &&
       (this.ineSelected || this.passportSelected) &&
-      this.propertyImages.length > 0
+      this.propertyImages.length > 0 &&
+      this.price !== null && this.price > 0 &&
+      this.latitude !== null && this.longitude !== null
     );
   }
   
@@ -156,6 +200,9 @@ export class PropertyUploadPage {
         },
         documento: this.documentPreview,
         imagenes: this.propertyImages,
+        precio: this.price,
+        latitud: this.latitude,
+        longitud: this.longitude,
         createdAt: new Date()
       };
 

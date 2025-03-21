@@ -3,6 +3,9 @@ import { NavController, AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service'; // Importamos el servicio de autenticación
 
+
+declare var google: any;
+
 @Component({
   selector: 'app-detalle',
   templateUrl: './detalle.page.html',
@@ -47,10 +50,41 @@ export class DetallePage implements OnInit {
           this.imagenActualIndex = 0;
         }
         console.log('Propiedad obtenida:', this.propiedad);
+        this.loadMap();
       }
     } catch (error) {
       console.error('Error al obtener la propiedad:', error);
       this.navCtrl.navigateBack(['/search']);
+    }
+  }
+
+  loadMap() {
+    // Verifica si la API de Google Maps está cargada
+    if (typeof google !== 'undefined' && google.maps) {
+      if (this.propiedad.latitud && this.propiedad.longitud) {
+        const mapElement = document.getElementById('map')!;
+        const map = new google.maps.Map(mapElement, {
+          center: {
+            lat: this.propiedad.latitud,
+            lng: this.propiedad.longitud
+          },
+          zoom: 14
+        });
+
+        // Crear el marcador en la ubicación de la propiedad
+        const marker = new google.maps.Marker({
+          position: {
+            lat: this.propiedad.latitud,
+            lng: this.propiedad.longitud
+          },
+          map: map,
+          title: 'Ubicación de la propiedad'
+        });
+      } else {
+        console.error('Faltan las coordenadas de latitud o longitud.');
+      }
+    } else {
+      console.error('Google Maps API no está disponible.');
     }
   }
 
