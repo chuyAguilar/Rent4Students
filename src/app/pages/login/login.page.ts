@@ -65,7 +65,7 @@ export class LoginPage {
   
           // 🔹 Redirigir según el tipo de usuario
           if (userData['userType'] === 'propietario') {
-            this.navCtrl.navigateForward('/property-upload'); // Página para propietarios
+            this.navCtrl.navigateForward('/home-propietario'); // Página para propietarios
           } else if (userData['userType'] === 'quiero-rentar') {
             this.navCtrl.navigateForward('/search'); // Página para estudiantes
           } else {
