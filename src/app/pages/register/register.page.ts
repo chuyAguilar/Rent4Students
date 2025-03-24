@@ -21,8 +21,13 @@ export class RegisterPage {
   passwordType: string = 'password';
   confirmPasswordType: string = 'password';
 
-  constructor(private navCtrl: NavController, private authService: AuthService, private loadingController: LoadingController, private alertController: AlertController) {}
+  constructor(private navCtrl: NavController, private authService: AuthService, private loadingController: LoadingController, private alertController: AlertController,) {}
 
+  onBack() {
+    // Usamos NavController para ir hacia atrás
+    this.navCtrl.back();
+  }
+  
   validateForm() {
     this.isFormValid = 
       this.user.trim() !== '' &&

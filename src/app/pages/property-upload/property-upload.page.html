@@ -1,3 +1,15 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="onBack()">
+        <ion-icon name="arrow-back"></ion-icon>
+        Volver
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Formulario de Propiedad</ion-title>
+  </ion-toolbar>
+</ion-header>
+
 <ion-content class="property-content">
   <ion-card class="centered-card">
     <ion-card-content>
@@ -8,12 +20,12 @@
         <h2>Subir Imágenes</h2>
         <ion-item>
           <ion-label>Seleccionar imágenes:</ion-label>
-          <input type="file" (change)="onImageSelected($event)" multiple accept="image/*">
+          <input type="file" (change)="onImageSelected($event)" multiple accept="image/*" class="input-file">
         </ion-item>
 
         <div class="image-preview-container">
           <div *ngFor="let img of propertyImages" class="image-preview">
-            <img [src]="img" alt="Imagen subida">
+            <img [src]="img" alt="Imagen subida" class="img-preview">
           </div>
         </div>
 
@@ -35,12 +47,8 @@
           </ion-radio-group>
         </ion-item>
 
-        
         <!-- Aquí va el mapa -->
-        <div id="map" style="height: 400px;"></div>
-        
-
-        
+        <div id="map" style="height: 200px; width: 100%; margin-bottom: 16px;"></div>
 
         <h2>ESPECIFICACIONES</h2>
 
@@ -103,11 +111,11 @@
         <div class="upload-section">
           <ion-item class="upload-box" *ngIf="ineSelected || passportSelected">
             <ion-label>Sube tu documento:</ion-label>
-            <input type="file" (change)="onFileSelected($event)">
+            <input type="file" (change)="onFileSelected($event)" class="input-file">
           </ion-item>
 
           <div class="document-preview" *ngIf="documentPreview">
-            <img [src]="documentPreview" alt="Documento subido">
+            <img [src]="documentPreview" alt="Documento subido" class="img-preview">
           </div>
         </div>
 
@@ -117,6 +125,7 @@
   </ion-card>
 </ion-content>
 
+<!-- Modal de confirmación -->
 <div id="confirmationModal" class="modal" style="display: none;">
   <div class="modal-content">
     <span class="close" (click)="closeModal()">&times;</span>

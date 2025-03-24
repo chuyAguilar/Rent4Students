@@ -57,7 +57,10 @@ export class PropertyUploadPage implements AfterViewInit{
     private alert: AlertController,
     private loadingController: LoadingController
   ) {}
-
+    onBack() {
+      // Usamos NavController para ir hacia atrás
+      this.navCtrl.back();
+    }
   ngAfterViewInit() {
     setTimeout(() => {
       this.initMap();
