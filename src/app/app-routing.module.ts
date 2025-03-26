@@ -50,7 +50,8 @@ const routes: Routes = [
   {
     path: 'metododepago',
     loadChildren: () => import('./pages/metododepago/metododepago.module').then( m => m.MetododepagoPageModule)
-  },  {
+  },
+  {
     path: 'home-propietario',
     loadChildren: () => import('./pages/home-propietario/home-propietario.module').then( m => m.HomePropietarioPageModule)
   },
@@ -58,7 +59,10 @@ const routes: Routes = [
     path: 'ver-citas-pro',
     loadChildren: () => import('./pages/ver-citas-pro/ver-citas-pro.module').then( m => m.VerCitasProPageModule)
   },
-
+  {
+    path: 'citas-propietario',
+    loadChildren: () => import('./pages/citas-propietario/citas-propietario.module').then( m => m.CitasPropietarioPageModule)
+  },
 
 
 
