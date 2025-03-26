@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ToastController } from '@ionic/angular';
-import { NavController } from '@ionic/angular';
+import { ToastController, NavController } from '@ionic/angular';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-mis-citas',
@@ -9,39 +9,26 @@ import { NavController } from '@ionic/angular';
   standalone: false
 })
 export class MisCitasPage implements OnInit {
-  citas = [
-    {
-      id: 1,
-      titulo: 'Renta de departamento',
-      fecha: new Date(),
-      hora: '10:00 AM',
-      ubicacion: 'Av. Reforma 123, CDMX',
-      detalles: 'Visita',
-      estado: 'Aceptada'
-    },
-    {
-      id: 2,
-      titulo: 'Entrega de Documentos',
-      fecha: new Date(),
-      hora: '3:00 PM',
-      ubicacion: 'Colonia Centro, Guadalajara',
-      detalles: 'Visita',
-      estado: 'Rechazada'
-    },
-    {
-      id: 3,
-      titulo: 'Revisión de contrato',
-      fecha: new Date(),
-      hora: '12:00 PM',
-      ubicacion: 'Santa Fe, CDMX',
-      detalles: 'Firma de contrato',
-      estado: 'Pendiente'
+  citas: any[] = [];
+
+  constructor(
+    private toastCtrl: ToastController,
+    private navCtrl: NavController,
+    private authService: AuthService
+  ) {}
+
+  ngOnInit() {
+    this.loadCitas();
+  }
+
+  async loadCitas() {
+    try {
+      this.citas = await this.authService.getCitasSentByCurrentUser();
+    } catch (error) {
+      console.error('Error al cargar las citas:', error);
+      this.mostrarToast('Error al cargar las citas', 'danger');
     }
-  ];
-
-  constructor(private toastCtrl: ToastController, private navCtrl: NavController) {}
-
-  ngOnInit() {}
+  }
 
   getEstadoColor(estado: string): string {
     switch (estado) {
@@ -56,6 +43,7 @@ export class MisCitasPage implements OnInit {
 
   refreshCitas(event: any) {
     setTimeout(() => {
+      this.loadCitas();
       event.target.complete();
       this.mostrarToast('Citas actualizadas.', 'primary');
     }, 1500);

@@ -38,25 +38,61 @@
       <ion-item *ngFor="let cita of citas">
         <ion-card>
           <ion-card-header>
+            <!-- Título y fecha/hora de la cita -->
             <ion-card-title>{{ cita.titulo }}</ion-card-title>
             <ion-card-subtitle>{{ cita.fecha | date:'fullDate' }} - {{ cita.hora }}</ion-card-subtitle>
           </ion-card-header>
-
           <ion-card-content>
-            <p><strong>Ubicación:</strong> {{ cita.ubicacion }}</p>
-            <p><strong>Detalles:</strong> {{ cita.detalles }}</p>
-            <p><strong>Estado:</strong>
-              <ion-badge [color]="getEstadoColor(cita.estado)">
-                {{ cita.estado }}
+            <!-- Estado de la cita -->
+            <p>
+              <strong>Estado:</strong>
+              <ion-badge [color]="getEstadoColor(cita.status)">
+                {{ cita.status }}
               </ion-badge>
             </p>
+            <!-- Datos del propietario -->
+            <p *ngIf="cita.ownerData">
+              <strong>Propietario:</strong> {{ cita.ownerData.user }}
+            </p>
+            <!-- Datos de la propiedad -->
+            <div *ngIf="cita.propertyData">
+              <p>
+                <strong>Tipo:</strong>
+                {{ cita.propertyData.servicios?.tipo || cita.propertyData.tipo || 'N/A' }}
+              </p>
+              <p>
+                <strong>Precio:</strong>
+                {{ cita.propertyData.precio | currency }}
+              </p>
+              <p>
+                <strong>Habitaciones:</strong>
+                {{ cita.propertyData.habitaciones }}
+              </p>
+              <p>
+                <strong>Baños:</strong>
+                {{ cita.propertyData.banos }}
+              </p>
+              <p>
+                <strong>Estacionamiento:</strong>
+                {{ cita.propertyData.estacionamiento }}
+              </p>
+              <p>
+                <strong>Especificaciones:</strong>
+                {{ cita.propertyData.especificaciones_adicionales }}
+              </p>
+            </div>
+            <!-- Mostrar imagen de la propiedad si existe -->
+            <div *ngIf="cita.propertyData?.documento">
+              <ion-img [src]="cita.propertyData.imagenes"></ion-img>
+            </div>
           </ion-card-content>
         </ion-card>
       </ion-item>
     </ion-list>
-
+  
     <ion-refresher slot="fixed" (ionRefresh)="refreshCitas($event)" pullMin="50" pullMax="150">
       <ion-refresher-content pullingText="Desliza para actualizar..." refreshingText="Actualizando..."></ion-refresher-content>
     </ion-refresher>
   </ion-content>
+  
 </div>
