@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController, ToastController } from '@ionic/angular';
 import { NavController } from '@ionic/angular';
-
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-citas-propietarios',
@@ -9,31 +9,29 @@ import { NavController } from '@ionic/angular';
   styleUrls: ['./citas-propietario.page.scss'],
   standalone: false
 })
-export class CitasPropietariosPage {
-  citas = [
-    {
-      id: 1,
-      titulo: 'Renta de departamento',
-      fecha: new Date(),
-      hora: '10:00 AM',
-      cliente: 'Juan Pérez',
-      ubicacion: 'Av. Reforma 123, CDMX',
-      detalles: 'Visita'
-    },
-    {
-      id: 2,
-      titulo: 'Entrega de Documentos',
-      fecha: new Date(),
-      hora: '3:00 PM',
-      cliente: 'Ana López',
-      ubicacion: 'Colonia Centro, Guadalajara',
-      detalles: 'Visita'
+export class CitasPropietariosPage implements OnInit {
+  // Inicialmente, el array se encuentra vacío y se llenará con los datos de Firestore
+  citas: any[] = [];
+
+  constructor(
+    private alertCtrl: AlertController,
+    private toastCtrl: ToastController,
+    private navCtrl: NavController,
+    private authService: AuthService
+  ) {}
+
+  // Al inicializar la página, se obtienen las citas del usuario autenticado
+  async ngOnInit() {
+    try {
+      this.citas = await this.authService.getCitasOfCurrentUser();
+      console.log('Citas del usuario actual:', this.citas);
+    } catch (error) {
+      console.error('Error al obtener las citas:', error);
+      this.mostrarToast('Error al cargar las citas', 'danger');
     }
-  ];
+  }
 
-  constructor(private alertCtrl: AlertController, private toastCtrl: ToastController,private navCtrl: NavController) {}
-
-  async aceptarCita(id: number) {
+  async aceptarCita(id: string) {
     const alert = await this.alertCtrl.create({
       header: 'Confirmar',
       message: '¿Estás seguro de aceptar esta cita?',
@@ -41,8 +39,17 @@ export class CitasPropietariosPage {
         { text: 'Cancelar', role: 'cancel' },
         {
           text: 'Aceptar',
-          handler: () => {
-            this.mostrarToast('Cita aceptada correctamente.', 'success');
+          handler: async () => {
+            try {
+              // Actualizamos el status a 'aceptada'
+              await this.authService.updateCitaStatus(id, 'aceptada');
+              this.mostrarToast('Cita aceptada correctamente.', 'success');
+              // Opcional: refrescar la lista de citas
+              this.citas = await this.authService.getCitasOfCurrentUser();
+            } catch (error) {
+              console.error('Error actualizando el status de la cita:', error);
+              this.mostrarToast('Error al actualizar el status de la cita.', 'danger');
+            }
           }
         }
       ]
@@ -50,7 +57,7 @@ export class CitasPropietariosPage {
     await alert.present();
   }
 
-  async rechazarCita(id: number) {
+  async rechazarCita(id: string) {
     const alert = await this.alertCtrl.create({
       header: 'Confirmar',
       message: '¿Estás seguro de rechazar esta cita?',
@@ -58,8 +65,17 @@ export class CitasPropietariosPage {
         { text: 'Cancelar', role: 'cancel' },
         {
           text: 'Rechazar',
-          handler: () => {
-            this.mostrarToast('Cita rechazada.', 'danger');
+          handler: async () => {
+            try {
+              // Actualizamos el status a 'rechazada'
+              await this.authService.updateCitaStatus(id, 'rechazada');
+              this.mostrarToast('Cita rechazada.', 'danger');
+              // Opcional: refrescar la lista de citas
+              this.citas = await this.authService.getCitasOfCurrentUser();
+            } catch (error) {
+              console.error('Error actualizando el status de la cita:', error);
+              this.mostrarToast('Error al actualizar el status de la cita.', 'danger');
+            }
           }
         }
       ]
@@ -77,13 +93,18 @@ export class CitasPropietariosPage {
     toast.present();
   }
 
+  // Función para refrescar las citas (por ejemplo, en un pull-to-refresh)
   refreshCitas(event: any) {
-    setTimeout(() => {
+    setTimeout(async () => {
+      try {
+        this.citas = await this.authService.getCitasOfCurrentUser();
+        this.mostrarToast('Citas actualizadas.', 'primary');
+      } catch (error) {
+        this.mostrarToast('Error al actualizar las citas', 'danger');
+      }
       event.target.complete();
-      this.mostrarToast('Citas actualizadas.', 'primary');
     }, 1500);
   }
-
 
   verCitas() {
     this.navCtrl.navigateForward('/citas-propietarios');
@@ -97,5 +118,4 @@ export class CitasPropietariosPage {
     localStorage.removeItem('userToken'); 
     this.navCtrl.navigateRoot('/login');
   }
-
 }

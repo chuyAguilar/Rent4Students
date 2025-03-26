@@ -84,52 +84,53 @@ export class SolicitarvisitaPage implements OnInit {
   }
 
   // Confirmar cita
-  async confirmarCita() {
-    if (!this.fecha || !this.hora) {
-      alert("Por favor, selecciona una fecha y hora.");
-      return;
-    }
-
-    // 1. Obtenemos el usuario actual (si estás logueado)
-    const currentUser = this.auth.currentUser;
-    if (!currentUser) {
-      alert("Debes iniciar sesión para solicitar una cita.");
-      return;
-    }
-    const userId = currentUser.uid;
-
-    // 2. Obtenemos el ownerId de la propiedad
-    const ownerId = this.propiedad.ownerId;
-    if (!ownerId) {
-      alert("No se encontró el ID del propietario en la propiedad.");
-      return;
-    }
-
-    try {
-      // 3. Creamos la cita usando el servicio
-      await this.authService.createCita(ownerId, userId, this.fecha, this.hora);
-
-      // 4. Mostramos el toast de confirmación
-      const toast = await this.toastController.create({
-        message: "El arrendatario está por confirmar tu visita.",
-        duration: 3000,
-        position: "top",
-        color: "success"
-      });
-      await toast.present();
-
-      // 5. Navegamos a la página deseada
-      this.router.navigate(['/search']);
-    } catch (error) {
-      console.error('Error al crear la cita:', error);
-      // Puedes mostrar un toast de error si lo deseas
-      const toast = await this.toastController.create({
-        message: "Ocurrió un error al crear la cita. Por favor, inténtalo de nuevo.",
-        duration: 3000,
-        position: "top",
-        color: "danger"
-      });
-      await toast.present();
-    }
+// Confirmar cita
+async confirmarCita() {
+  if (!this.fecha || !this.hora) {
+    alert("Por favor, selecciona una fecha y hora.");
+    return;
   }
+
+  // 1. Obtenemos el usuario actual (si estás logueado)
+  const currentUser = this.auth.currentUser;
+  if (!currentUser) {
+    alert("Debes iniciar sesión para solicitar una cita.");
+    return;
+  }
+  const userId = currentUser.uid;
+
+  // 2. Obtenemos el ownerId de la propiedad
+  const ownerId = this.propiedad.ownerId;
+  if (!ownerId) {
+    alert("No se encontró el ID del propietario en la propiedad.");
+    return;
+  }
+
+  try {
+    // 3. Creamos la cita usando el servicio, enviando también el id de la propiedad
+    await this.authService.createCita(ownerId, userId, this.idPropiedad, this.fecha, this.hora);
+
+    // 4. Mostramos el toast de confirmación
+    const toast = await this.toastController.create({
+      message: "El arrendatario está por confirmar tu visita.",
+      duration: 3000,
+      position: "top",
+      color: "success"
+    });
+    await toast.present();
+
+    // 5. Navegamos a la página deseada
+    this.router.navigate(['/search']);
+  } catch (error) {
+    console.error('Error al crear la cita:', error);
+    const toast = await this.toastController.create({
+      message: "Ocurrió un error al crear la cita. Por favor, inténtalo de nuevo.",
+      duration: 3000,
+      position: "top",
+      color: "danger"
+    });
+    await toast.present();
+  }
+}
+
 }

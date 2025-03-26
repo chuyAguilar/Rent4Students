@@ -34,22 +34,38 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-
 <ion-content class="ion-padding" id="main-content">
   <ion-list>
     <ion-card *ngFor="let cita of citas">
       <ion-card-header>
-        <ion-card-title>{{ cita.titulo }}</ion-card-title>
+        <ion-card-title>{{ cita.status }}</ion-card-title>
         <ion-card-subtitle>
           📅 {{ cita.fecha | date:'fullDate' }} - ⏰ {{ cita.hora }}
         </ion-card-subtitle>
       </ion-card-header>
       <ion-card-content>
-        <p><strong>👤 Cliente:</strong> {{ cita.cliente }}</p>
-        <p><strong>📍 Ubicación:</strong> {{ cita.ubicacion }}</p>
-        <p><strong>📋 Detalles:</strong> {{ cita.detalles }}</p>
+        <!-- Información del cliente -->
+        <p><strong>👤 Cliente:</strong> {{ cita.userData?.user }}</p>
+        
+        <!-- Información de la propiedad -->
+        <p><strong>🏠 Tipo de Propiedad:</strong> {{ cita.propertyData?.tipo }}</p>
+        <p><strong>💲 Precio:</strong> {{ cita.propertyData?.precio}}</p>
+        <p><strong>🛏 Habitaciones:</strong> {{ cita.propertyData?.habitaciones }}</p>
+        <!-- <p><strong>🛁 Baños:</strong> {{ cita.propertyData?.banos }}</p> -->
+        <p><strong>🚗 Estacionamiento:</strong> {{ cita.propertyData?.estacionamiento }}</p>
+        <p><strong>📋 Especificaciones:</strong> {{ cita.propertyData?.especificaciones_adicionales }}</p>
+        <!-- <p>
+          <strong>📍 Ubicación:</strong>
+          Lat: {{ cita.propertyData?.latitud }}, Lng: {{ cita.propertyData?.longitud }}
+        </p> -->
+        
+        <!-- Mostrar imagen si está disponible -->
+        <div *ngIf="cita.propertyData?.documento">
+          <ion-img [src]="cita.propertyData.documento"></ion-img>
+        </div>
       </ion-card-content>
-      <ion-row class="ion-justify-content-around">
+      
+      <ion-row class="ion-justify-content-around" *ngIf="cita.status === 'pendiente'">
         <ion-button color="success" (click)="aceptarCita(cita.id)">
           <ion-icon name="checkmark-circle"></ion-icon> Aceptar
         </ion-button>
@@ -57,9 +73,12 @@
           <ion-icon name="close-circle"></ion-icon> Rechazar
         </ion-button>
       </ion-row>
+      
     </ion-card>
   </ion-list>
+  
   <ion-refresher slot="fixed" (ionRefresh)="refreshCitas($event)">
     <ion-refresher-content pullingText="Desliza para actualizar..."></ion-refresher-content>
   </ion-refresher>
 </ion-content>
+
