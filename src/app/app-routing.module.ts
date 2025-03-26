@@ -63,7 +63,10 @@ const routes: Routes = [
     path: 'citas-propietario',
     loadChildren: () => import('./pages/citas-propietario/citas-propietario.module').then( m => m.CitasPropietarioPageModule)
   },
-
+  {
+    path: 'mis-citas',
+    loadChildren: () => import('./pages/mis-citas/mis-citas.module').then( m => m.MisCitasPageModule)
+  },
 
 
 
