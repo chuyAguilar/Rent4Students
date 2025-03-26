@@ -12,7 +12,7 @@ export class HomePropietarioPage {
   constructor(private navCtrl: NavController) {}
 
   verCitas() {
-    this.navCtrl.navigateForward('/ver-citas');
+    this.navCtrl.navigateForward('/citas-propietario');
   }
 
   publicarPropiedad() {
