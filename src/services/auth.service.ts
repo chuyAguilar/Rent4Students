@@ -96,6 +96,50 @@ async createCita(ownerId: string, userId: string, propertyId: string, fecha: str
   }
 }
 
+// 🔹 Función para obtener las citas enviadas por el usuario actual (filtrado por userId)
+// y mapear la información adicional de la propiedad y del propietario
+async getCitasSentByCurrentUser() {
+  try {
+    // Verificar que haya un usuario autenticado
+    const currentUser = this.auth.currentUser;
+    if (!currentUser) {
+      throw new Error('No hay un usuario autenticado actualmente.');
+    }
+
+    // Obtener el userId (uid) y preparar la consulta
+    const userId = currentUser.uid;
+    const citasRef = collection(this.firestore, 'citas');
+    const q = query(citasRef, where('userId', '==', userId));
+
+    // Ejecutar la consulta y mapear los resultados de forma asíncrona
+    const querySnapshot = await getDocs(q);
+    const citas = await Promise.all(querySnapshot.docs.map(async (docSnapshot) => {
+      const cita = { id: docSnapshot.id, ...docSnapshot.data() } as { id: string, propertyId?: string, userId?: string, ownerId?: string };
+
+      // Obtener los datos de la propiedad (si se tiene propertyId)
+      let propertyData = null;
+      if (cita.propertyId) {
+        propertyData = await this.getPropertyById(cita.propertyId);
+      }
+
+      // Obtener los datos del propietario (owner) usando el ownerId
+      let ownerData = null;
+      if (cita.ownerId) {
+        ownerData = await this.getUserData(cita.ownerId);
+      }
+
+      // Retornamos la cita extendida con la información adicional
+      return { ...cita, propertyData, ownerData };
+    }));
+
+    return citas;
+  } catch (error) {
+    console.error('Error obteniendo las citas del usuario actual (userId):', error);
+    throw error;
+  }
+}
+
+
 
 async getCitasOfCurrentUser() {
   try {

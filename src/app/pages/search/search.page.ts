@@ -13,7 +13,7 @@ import { runInInjectionContext, Injector } from '@angular/core';
 export class SearchPage implements OnInit {
   filtroTipo: string = '';
   filtroUniversidad: string = '';
-  filtroPrecio: number[] = [2000, 10000];
+  filtroPrecio: number[] = [0, 10000000];
 
   propiedades: any[] = [];
 
