@@ -46,20 +46,57 @@
       </ion-segment-button>
     </ion-segment>
 
-    <ion-segment [(ngModel)]="filtroUniversidad" class="custom-segment">
-      <ion-segment-button value="uaq">UAQ</ion-segment-button>
-      <ion-segment-button value="itq">ITQ</ion-segment-button>
-      <ion-segment-button value="uteq">UTEQ</ion-segment-button>
-      <ion-segment-button value="uvm">UVM</ion-segment-button>
-      <ion-segment-button value="unam">UNAM</ion-segment-button>
+    <ion-segment [(ngModel)]="filtroUniversidad" class="custom-segment scrollable-segment">
+      <ion-segment-button value="">
+        <ion-icon name="school"></ion-icon>
+        Todas
+      </ion-segment-button>
+      <ion-segment-button value="UAQ">
+        UAQ
+      </ion-segment-button>
+      <ion-segment-button value="ITQ">
+        ITQ
+      </ion-segment-button>
+      <ion-segment-button value="UTEQ">
+        UTEQ
+      </ion-segment-button>
+      <ion-segment-button value="UVM">
+        UVM
+      </ion-segment-button>
+      <ion-segment-button value="UNAM">
+        UNAM
+      </ion-segment-button>
     </ion-segment>
 
-    <ion-item class="custom-item">
+    <!-- Filtro de rango de precios con inputs -->
+    <div class="price-filter">
       <ion-label>Rango de Precios</ion-label>
-      <ion-range min="1000" max="10000" [(ngModel)]="filtroPrecio" dualKnobs="true"></ion-range>
-    </ion-item>
+      <div class="price-inputs">
+        <ion-input 
+          class="price-input"
+          type="number" 
+          [(ngModel)]="filtroPrecioMin" 
+          placeholder="Mínimo" 
+          min="1000"
+          max="10000"
+          step="500">
+        </ion-input>
+        <span class="dash">-</span>
+        <ion-input 
+          class="price-input"
+          type="number" 
+          [(ngModel)]="filtroPrecioMax" 
+          placeholder="Máximo" 
+          min="1000"
+          max="10000"
+          step="500">
+        </ion-input>
+      </div>
+    </div>
+
   </div>
 
+  <!-- Lista de resultados -->
   <ion-list class="custom-list">
     <ion-card *ngFor="let propiedad of aplicarFiltros()" class="custom-card" (click)="verDetalle(propiedad)">
       <ion-img [src]="propiedad.imagen" class="custom-img"></ion-img>
@@ -68,9 +105,13 @@
           {{ propiedad.tipo }} - ${{ propiedad.precio }}
         </ion-card-title>
       </ion-card-header>
-      <ion-card-content>
-        A {{ propiedad.distancia }} km de {{ propiedad.universidad }}
-      </ion-card-content>
+    </ion-card>
+
+
+    <ion-card *ngIf="noResults" class="no-results-card">
+      <ion-card-header>
+        <ion-card-title>No hay propiedades que coincidan con los filtros.</ion-card-title>
+      </ion-card-header>
     </ion-card>
   </ion-list>
 </ion-content>

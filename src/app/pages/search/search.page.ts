@@ -12,10 +12,21 @@ import { runInInjectionContext, Injector } from '@angular/core';
 })
 export class SearchPage implements OnInit {
   filtroTipo: string = '';
-  filtroUniversidad: string = '';
-  filtroPrecio: number[] = [0, 10000000];
+  filtroUniversidad: 'UAQ' | 'ITQ' | 'UTEQ' | 'UVM' | 'UNAM' | '' = ''; 
+  filtroPrecioMin: number = 1000; 
+  filtroPrecioMax: number = 10000;
 
   propiedades: any[] = [];
+  
+  universidades: { [key: string]: { lat: number, lng: number } } = {
+    UAQ: { lat: 20.5889168, lng: -100.4185597 },
+    ITQ: { lat: 20.593303, lng: -100.4103997 },
+    UTEQ: { lat: 20.6539495, lng: -100.4086687 },
+    UVM: { lat: 20.709205, lng: -100.4482555 },
+    UNAM: { lat: 20.7048036, lng: -100.4484412 }
+  };
+
+  noResults: boolean = false;
 
   constructor(
     private navCtrl: NavController,
@@ -30,31 +41,28 @@ export class SearchPage implements OnInit {
   }
 
   async cargarPropiedades(): Promise<void> {
-
     const loading = await this.loadingController.create({
-      spinner: 'bubbles',  // Spinner de tipo bubbles
+      spinner: 'bubbles',
       message: 'Cargando propiedades...',
       translucent: true,
-      cssClass: 'custom-loading'  // Clase personalizada si deseas estilizar el spinner
+      cssClass: 'custom-loading'
     });
     await loading.present();
 
-    // Usamos runInInjectionContext para asegurar el contexto de inyección
     runInInjectionContext(this.injector, () => {
       this.afs.collection('properties')
-        .valueChanges({ idField: 'id' }) // Esto agrega el campo "id" a cada documento
+        .valueChanges({ idField: 'id' })
         .subscribe((properties: any[]) => {
-          this.propiedades = properties.map(p => ({
-            ...p, // Copia todos los campos originales (incluido el id gracias a valueChanges)
-            // Forzamos un precio numérico si 'especificaciones_adicionales' contiene "precio:xxxx"
-            precio: p.precio || 5000,
-            distancia: Math.random() * 10,
-            imagen: (p.imagenes && p.imagenes.length > 0)
-                      ? p.imagenes[0]
-                      : 'assets/casa.png'
-          }));
+          this.propiedades = properties.map(p => {
+            return {
+              ...p,
+              precio: p.precio || 5000,
+              distancia: Math.random() * 10,
+              imagen: (p.imagenes && p.imagenes.length > 0) ? p.imagenes[0] : 'assets/casa.png'
+            };
+          });
           console.log('Propiedades cargadas:', this.propiedades);
-          loading.dismiss(); 
+          loading.dismiss();
         });
     });
   }
@@ -62,16 +70,50 @@ export class SearchPage implements OnInit {
   verDetalle(propiedad: any): void {
     console.log('Propiedad seleccionada:', propiedad);
     console.log('ID de la propiedad:', propiedad.id);
-    // Navegamos a Detalle pasando sólo el id
     this.navCtrl.navigateForward(['/detalle'], { state: { id: propiedad.id } });
   }
 
-  aplicarFiltros() {
-    return this.propiedades.filter(p =>
-      (!this.filtroTipo || p.tipo === this.filtroTipo) &&
-      p.precio >= this.filtroPrecio[0] && p.precio <= this.filtroPrecio[1]
-    );
+  calcularDistancia(lat1: number, lon1: number, lat2: number, lon2: number): number {
+    const R = 6371; 
+    const dLat = this.degreesToRadians(lat2 - lat1);
+    const dLon = this.degreesToRadians(lon2 - lon1);
+    
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(this.degreesToRadians(lat1)) * Math.cos(this.degreesToRadians(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distancia = R * c; 
+    return distancia;
   }
+
+  degreesToRadians(degrees: number): number {
+    return degrees * (Math.PI / 180);
+  }
+
+  aplicarFiltros() {
+    let propiedadesFiltradas = this.propiedades.filter(p =>
+      (!this.filtroTipo || p.tipo === this.filtroTipo) &&
+      p.precio >= this.filtroPrecioMin &&
+      p.precio <= this.filtroPrecioMax
+    );
+
+    if (this.filtroUniversidad !== '') {
+      const uniSeleccionada = this.universidades[this.filtroUniversidad];
+
+      if (uniSeleccionada && uniSeleccionada.lat && uniSeleccionada.lng) {
+        propiedadesFiltradas = propiedadesFiltradas.filter(p =>
+          p.latitud && p.longitud && this.calcularDistancia(uniSeleccionada.lat, uniSeleccionada.lng, p.latitud, p.longitud) <= 3
+        );
+      } else {
+        console.error('Datos de la universidad o propiedad no encontrados:', this.filtroUniversidad);
+        propiedadesFiltradas = [];
+      }
+    }
+    this.noResults = propiedadesFiltradas.length === 0;
+    return propiedadesFiltradas;
+}
   
   verCitas() {
     this.navCtrl.navigateForward('/mis-citas');
