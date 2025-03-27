@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController, ToastController } from '@ionic/angular';
+import { AlertController, ToastController, LoadingController } from '@ionic/angular';
 import { NavController } from '@ionic/angular';
 import { AuthService } from '../../../services/auth.service';
 
@@ -12,25 +12,46 @@ import { AuthService } from '../../../services/auth.service';
 export class CitasPropietariosPage implements OnInit {
   // Inicialmente, el array se encuentra vacío y se llenará con los datos de Firestore
   citas: any[] = [];
+  loading: any;
 
   constructor(
     private alertCtrl: AlertController,
     private toastCtrl: ToastController,
     private navCtrl: NavController,
-    private authService: AuthService
+    private authService: AuthService,
+    private loadingCtrl: LoadingController
   ) {}
 
   // Al inicializar la página, se obtienen las citas del usuario autenticado
   async ngOnInit() {
+    this.presentLoading();
     try {
       this.citas = await this.authService.getCitasOfCurrentUser();
       console.log('Citas del usuario actual:', this.citas);
+      if (this.citas.length === 0) {
+        setTimeout(() => {
+          this.loading.dismiss(); // Si no hay datos, ocultamos el loading después de 5 segundos
+        }, 5000);
+      } else {
+        this.loading.dismiss(); // Si hay datos, ocultamos el loading inmediatamente
+      }
     } catch (error) {
       console.error('Error al obtener las citas:', error);
       this.mostrarToast('Error al cargar las citas', 'danger');
+      this.loading.dismiss();
     }
   }
 
+  async presentLoading() {
+    this.loading = await this.loadingCtrl.create({
+      message: 'Cargando citas...',
+      spinner: 'bubbles', // Establecemos el tipo de spinner como 'bubbles'
+      duration: 5000, // Desaparece después de 5 segundos si no se resuelve
+      translucent: true
+    });
+    await this.loading.present();
+  }
+  
   async aceptarCita(id: string) {
     const alert = await this.alertCtrl.create({
       header: 'Confirmar',

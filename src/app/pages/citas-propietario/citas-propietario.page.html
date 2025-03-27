@@ -35,7 +35,7 @@
   </ion-toolbar>
 </ion-header>
 <ion-content class="ion-padding" id="main-content">
-  <ion-list>
+  <ion-list *ngIf="citas.length > 0; else noCitas">
     <ion-card *ngFor="let cita of citas">
       <ion-card-header>
         <ion-card-title>{{ cita.status }}</ion-card-title>
@@ -76,6 +76,17 @@
       
     </ion-card>
   </ion-list>
+
+  <ng-template #noCitas>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>No hay citas agendadas</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        Actualmente no tienes citas agendadas.
+      </ion-card-content>
+    </ion-card>
+  </ng-template>
   
   <ion-refresher slot="fixed" (ionRefresh)="refreshCitas($event)">
     <ion-refresher-content pullingText="Desliza para actualizar..."></ion-refresher-content>
