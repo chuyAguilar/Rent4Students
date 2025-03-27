@@ -1,13 +1,16 @@
-import { Injectable } from '@angular/core';
+import { Injectable, runInInjectionContext, Injector } from '@angular/core';
 import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, User } from '@angular/fire/auth';
 import { Firestore, doc, setDoc, getDoc, addDoc, collection, query, where, getDocs, updateDoc } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  constructor(private auth: Auth, private firestore: Firestore, private router: Router) {}
+  constructor(private auth: Auth, private firestore: Firestore, private router: Router, private afs: AngularFirestore,
+    private afAuth: AngularFireAuth, private injector: Injector) {}
 
   // 🔹 Registrar usuario en Firebase Authentication y guardar datos en Firestore
   async register(email: string, password: string, userType: string, user: string) {
@@ -189,6 +192,35 @@ async updateCitaStatus(citaId: string, status: string) {
     console.error('Error actualizando el status de la cita:', error);
     throw error;
   }
+}
+
+//buscar propiedades por id de propetario
+async getUserProperties(): Promise<any[]> { // Replace 'any' with the correct type if available
+  // Obtenemos el usuario actual
+  const user = this.auth.currentUser;
+  if (!user || !user.uid) {
+    throw new Error('Usuario no autenticado');
+  }
+
+  // Realizamos la consulta filtrando las propiedades cuyo ownerId coincida con el id del usuario actual
+  const propertiesRef = collection(this.firestore, 'properties');
+  const q = query(propertiesRef, where('ownerId', '==', user.uid));
+  const querySnapshot = await getDocs(q);
+  const properties = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  return properties;
+}
+ // Actualiza una propiedad (envuelta en runInInjectionContext)
+ updateProperty(propertyId: string, updatedData: any): Promise<void> {
+  return runInInjectionContext(this.injector, () => {
+    return this.afs.doc(`properties/${propertyId}`).update(updatedData);
+  });
+}
+
+// Elimina una propiedad (opcional: envuelta también si surge el mismo error)
+deleteProperty(propertyId: string): Promise<void> {
+  return runInInjectionContext(this.injector, () => {
+    return this.afs.doc(`properties/${propertyId}`).delete();
+  });
 }
 
   // 🔹 Cerrar sesión

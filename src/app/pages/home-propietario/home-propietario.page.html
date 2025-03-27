@@ -4,7 +4,6 @@
       <ion-title>Menú</ion-title>
     </ion-toolbar>
   </ion-header>
-
   <ion-content>
     <ion-list>
       <ion-item button (click)="verCitas()">
@@ -35,4 +34,26 @@
 <ion-content id="main-content" class="ion-padding">
   <h2>Bienvenido, propietario</h2>
   <p>Aquí puedes gestionar tus propiedades y citas.</p>
+
+  <ion-list>
+    <ion-card *ngFor="let propiedad of userProperties">
+      <!-- Muestra la imagen si existe -->
+      <ion-img *ngIf="propiedad.imagen" [src]="propiedad.imagen"></ion-img>
+      
+      <ion-card-header>
+        <ion-card-title>{{ propiedad.tipo }} - ${{ propiedad.precio }}</ion-card-title>
+        <ion-card-subtitle>{{ propiedad.especificaciones_adicionales }}</ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        <p><strong>Habitaciones:</strong> {{ propiedad.habitaciones }}</p>
+        <p><strong>Baños:</strong> {{ propiedad.banos }}</p>
+        <p><strong>Estacionamiento:</strong> {{ propiedad.estacionamiento }}</p>
+      </ion-card-content>
+
+      <!-- Botones para actualizar o eliminar -->
+      <ion-button fill="clear" (click)="openUpdateModal(propiedad)">Editar</ion-button>
+      <ion-button fill="clear" color="danger" (click)="openDeleteModal(propiedad)">Eliminar</ion-button>
+    </ion-card>
+  </ion-list>
 </ion-content>
