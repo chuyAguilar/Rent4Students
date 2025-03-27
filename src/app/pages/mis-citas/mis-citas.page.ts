@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ToastController, NavController } from '@ionic/angular';
+import { ToastController, NavController, LoadingController } from '@ionic/angular';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
@@ -14,7 +14,8 @@ export class MisCitasPage implements OnInit {
   constructor(
     private toastCtrl: ToastController,
     private navCtrl: NavController,
-    private authService: AuthService
+    private authService: AuthService,
+    private loadingCtrl: LoadingController
   ) {}
 
   ngOnInit() {
@@ -22,11 +23,21 @@ export class MisCitasPage implements OnInit {
   }
 
   async loadCitas() {
+    const loading = await this.loadingCtrl.create({
+      message: 'Cargando citas...',
+      spinner: 'bubbles',
+      duration: 5000 
+    });
+
+    await loading.present();
+
     try {
       this.citas = await this.authService.getCitasSentByCurrentUser();
     } catch (error) {
       console.error('Error al cargar las citas:', error);
       this.mostrarToast('Error al cargar las citas', 'danger');
+    }finally {
+      loading.dismiss(); 
     }
   }
 
