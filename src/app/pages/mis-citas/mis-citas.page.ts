@@ -19,7 +19,24 @@ export class MisCitasPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.loadCitas();
+    this.checkUserAuthentication();
+  }
+
+  async checkUserAuthentication() {
+    const storedUserData = localStorage.getItem('userData');
+    
+    if (!storedUserData) {
+      this.navCtrl.navigateRoot('/login');
+      return;
+    }
+
+    const userData = JSON.parse(storedUserData);
+    
+    if (userData && userData.userType === 'quiero-rentar') {
+      this.loadCitas();
+    } else {
+      this.navCtrl.navigateRoot('/login');
+    }
   }
 
   async loadCitas() {

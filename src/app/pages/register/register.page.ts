@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule, NavController, LoadingController, AlertController } from '@ionic/angular';
 import { AuthService } from '../../../services/auth.service';
@@ -23,6 +23,25 @@ export class RegisterPage {
 
   constructor(private navCtrl: NavController, private authService: AuthService, private loadingController: LoadingController, private alertController: AlertController,) {}
 
+
+  ngOnInit() {
+    // 🔹 Revisar si hay un usuario activo en el localStorage
+    const storedUserData = localStorage.getItem('userData');
+    if (storedUserData) {
+      const userData = JSON.parse(storedUserData);
+      if (userData && userData.userType) {
+        // 🔹 Si es propietario, redirigir a la página de propietarios
+        if (userData.userType === 'propietario') {
+          this.navCtrl.navigateForward('/home-propietario');
+        } 
+        // 🔹 Si es "quiero-rentar", redirigir a la página de búsqueda
+        else if (userData.userType === 'quiero-rentar') {
+          this.navCtrl.navigateForward('/search');
+        }
+      }
+    }
+  }
+  
   onBack() {
     // Usamos NavController para ir hacia atrás
     this.navCtrl.back();

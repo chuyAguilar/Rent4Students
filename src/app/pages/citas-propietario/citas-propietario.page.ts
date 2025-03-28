@@ -22,23 +22,40 @@ export class CitasPropietariosPage implements OnInit {
     private loadingCtrl: LoadingController
   ) {}
 
-  // Al inicializar la página, se obtienen las citas del usuario autenticado
   async ngOnInit() {
-    this.presentLoading();
-    try {
-      this.citas = await this.authService.getCitasOfCurrentUser();
-      console.log('Citas del usuario actual:', this.citas);
-      if (this.citas.length === 0) {
-        setTimeout(() => {
-          this.loading.dismiss(); // Si no hay datos, ocultamos el loading después de 5 segundos
-        }, 5000);
-      } else {
-        this.loading.dismiss(); // Si hay datos, ocultamos el loading inmediatamente
+    this.checkUserAuthentication();
+  }
+
+  // Verificación de autenticación y tipo de usuario
+  async checkUserAuthentication() {
+    const storedUserData = localStorage.getItem('userData');
+    
+    if (!storedUserData) {
+      this.navCtrl.navigateRoot('/login'); // Si no está autenticado, redirige al login
+      return;
+    }
+
+    const userData = JSON.parse(storedUserData);
+    
+    if (userData && userData.userType === 'propietario') {
+      this.presentLoading();
+      try {
+        this.citas = await this.authService.getCitasOfCurrentUser();
+        console.log('Citas del usuario actual:', this.citas);
+        if (this.citas.length === 0) {
+          setTimeout(() => {
+            this.loading.dismiss(); // Si no hay citas, oculta el loading después de 5 segundos
+          }, 5000);
+        } else {
+          this.loading.dismiss(); // Si hay citas, oculta el loading inmediatamente
+        }
+      } catch (error) {
+        console.error('Error al obtener las citas:', error);
+        this.mostrarToast('Error al cargar las citas', 'danger');
+        this.loading.dismiss();
       }
-    } catch (error) {
-      console.error('Error al obtener las citas:', error);
-      this.mostrarToast('Error al cargar las citas', 'danger');
-      this.loading.dismiss();
+    } else {
+      this.navCtrl.navigateRoot('/login'); // Si no es propietario, redirige al login
     }
   }
 
@@ -136,7 +153,7 @@ export class CitasPropietariosPage implements OnInit {
   }
 
   cerrarSesion() {
-    localStorage.removeItem('userToken'); 
+    localStorage.removeItem('userData'); 
     this.navCtrl.navigateRoot('/login');
   }
 }
