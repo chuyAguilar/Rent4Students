@@ -68,7 +68,11 @@ const routes: Routes = [
     loadChildren: () => import('./pages/mis-citas/mis-citas.module').then( m => m.MisCitasPageModule)
   },
 
-
+  {
+    path: 'offline',
+    loadChildren: () => import('./pages/offline/offline.module').then( m => m.OfflinePageModule)
+  }
+  
 
 ];
 
