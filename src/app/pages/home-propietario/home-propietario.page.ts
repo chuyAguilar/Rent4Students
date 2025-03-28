@@ -21,7 +21,24 @@ export class HomePropietarioPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.loadUserProperties();
+    this.checkUserAuthentication();
+  }
+
+  async checkUserAuthentication() {
+    const storedUserData = localStorage.getItem('userData');
+    
+    if (!storedUserData) {
+      this.navCtrl.navigateRoot('/login');
+      return;
+    }
+
+    const userData = JSON.parse(storedUserData);
+    
+    if (userData && userData.userType === 'propietario') {
+      this.loadUserProperties();
+    } else {
+      this.navCtrl.navigateRoot('/login');
+    }
   }
 
  // Abre el modal de actualización y actualiza la propiedad en Firestore.
@@ -85,7 +102,7 @@ async openDeleteModal(property: any) {
   }
 
   cerrarSesion() {
-    localStorage.removeItem('userToken');
+    localStorage.removeItem('userData');
     this.navCtrl.navigateRoot('/login');
   }
 

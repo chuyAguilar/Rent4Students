@@ -24,6 +24,17 @@ export class DetallePage implements OnInit {
   ) {}
 
   async ngOnInit(): Promise<void> {
+    const storedUserData = localStorage.getItem('userData');
+    
+    if (!storedUserData) {
+      this.navCtrl.navigateRoot('/login');
+      return;
+    }
+
+    const userData = JSON.parse(storedUserData);
+    
+    if (userData && userData.userType === 'quiero-rentar') {
+
     // Leemos el id enviado desde SearchPage
     const nav = this.router.getCurrentNavigation();
     const idRecibido = nav?.extras?.state?.['id'];
@@ -56,7 +67,9 @@ export class DetallePage implements OnInit {
       console.error('Error al obtener la propiedad:', error);
       this.navCtrl.navigateBack(['/search']);
     }
-  }
+  }else {
+    this.navCtrl.navigateRoot('/login');
+  }}
 
   loadMap() {
     // Verifica si la API de Google Maps está cargada

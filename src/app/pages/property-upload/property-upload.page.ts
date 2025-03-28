@@ -62,11 +62,27 @@ export class PropertyUploadPage implements AfterViewInit{
       this.navCtrl.back();
     }
   ngAfterViewInit() {
+    this.checkUserAuthentication();
     setTimeout(() => {
       this.initMap();
     }, 500); // Retrasar la inicialización para asegurar que el mapa esté listo
   }
 
+  async checkUserAuthentication() {
+    const storedUserData = localStorage.getItem('userData');
+    
+    if (!storedUserData) {
+      this.navCtrl.navigateRoot('/login');
+      return;
+    }
+
+    const userData = JSON.parse(storedUserData);
+    
+    if (userData.userType !== 'propietario') {
+      this.navCtrl.navigateRoot('/login');
+      return;
+    } 
+  }
   initMap() {
     const mapElement = document.getElementById('map')!;
     this.map = new google.maps.Map(mapElement, {

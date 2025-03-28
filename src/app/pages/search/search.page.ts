@@ -37,7 +37,24 @@ export class SearchPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.cargarPropiedades();
+    this.checkUserAuthentication();
+  }
+
+  async checkUserAuthentication() {
+    const storedUserData = localStorage.getItem('userData');
+    
+    if (!storedUserData) {
+      this.navCtrl.navigateRoot('/login');
+      return;
+    }
+
+    const userData = JSON.parse(storedUserData);
+    
+    if (userData && userData.userType === 'quiero-rentar') {
+      this.cargarPropiedades();
+    } else {
+      this.navCtrl.navigateRoot('/login');
+    }
   }
 
   async cargarPropiedades(): Promise<void> {
@@ -120,7 +137,7 @@ export class SearchPage implements OnInit {
   }
 
   cerrarSesion() {
-    localStorage.removeItem('userToken'); 
+    localStorage.removeItem('userData'); 
     this.navCtrl.navigateRoot('/login');
   }
 }

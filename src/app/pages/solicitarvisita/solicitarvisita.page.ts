@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ToastController, IonicModule } from '@ionic/angular';
+import { NavController,ToastController, IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service'; // Ajusta la ruta si está en otro lado
@@ -21,6 +21,7 @@ export class SolicitarvisitaPage implements OnInit {
   idPropiedad: string = '';   // Se asigna el ID recibido
 
   constructor(
+    private navCtrl: NavController,
     private router: Router,
     private toastController: ToastController,
     private activatedRoute: ActivatedRoute,
@@ -29,6 +30,16 @@ export class SolicitarvisitaPage implements OnInit {
   ) {}
 
   ngOnInit() {
+    const storedUserData = localStorage.getItem('userData');
+    
+    if (!storedUserData) {
+      this.navCtrl.navigateRoot('/login');
+      return;
+    }
+
+    const userData = JSON.parse(storedUserData);
+    
+    if (userData && userData.userType === 'quiero-rentar') {
     // Leer el id de los queryParams
     this.activatedRoute.queryParams.subscribe(params => {
       this.idPropiedad = params['id'];
@@ -38,7 +49,9 @@ export class SolicitarvisitaPage implements OnInit {
         // Llamar a la función que obtiene la propiedad
         this.getPropertyData();
       }
-    });
+    });}else{
+      this.navCtrl.navigateRoot('/login');
+    }
   }
 
   async getPropertyData() {

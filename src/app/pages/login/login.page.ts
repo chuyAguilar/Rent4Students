@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule, NavController, LoadingController, AlertController } from '@ionic/angular';
 import { AuthService } from '../../../services/auth.service';
@@ -15,8 +15,27 @@ export class LoginPage {
   user: string = ''; 
   password: string = '';
   isFormValid: boolean = false;
+  isRedirecting: boolean = true;
 
   constructor(private navCtrl: NavController, private authService: AuthService, private loadingController: LoadingController, private alertController: AlertController) {}
+
+
+  ngOnInit() {
+    const storedUserData = localStorage.getItem('userData');
+    if (storedUserData) {
+      const userData = JSON.parse(storedUserData);
+      if (userData && userData.userType) {
+        if (userData.userType === 'propietario') {
+          this.navCtrl.navigateForward('/home-propietario');
+        } 
+        else if (userData.userType === 'quiero-rentar') {
+          this.navCtrl.navigateForward('/search');
+        }
+      }
+    }else {
+      this.isRedirecting = false; 
+    }
+  }
 
   validateForm() {
     this.isFormValid = 
@@ -58,16 +77,21 @@ export class LoginPage {
       if (userCredential) {
         console.log('Usuario autenticado:', userCredential);
   
-        // 🔹 Obtener el tipo de usuario desde Firestore
         const userData = await this.authService.getUserData(userCredential.uid);
         if (userData && userData['userType']) {
           console.log('Tipo de usuario:', userData['userType']);
+
+          const userDataToStore = {
+            userType: userData['userType'],
+            email: this.user.trim()
+          };
   
-          // 🔹 Redirigir según el tipo de usuario
+          localStorage.setItem('userData', JSON.stringify(userDataToStore));
+  
           if (userData['userType'] === 'propietario') {
-            this.navCtrl.navigateForward('/home-propietario'); // Página para propietarios
+            this.navCtrl.navigateForward('/home-propietario');
           } else if (userData['userType'] === 'quiero-rentar') {
-            this.navCtrl.navigateForward('/search'); // Página para estudiantes
+            this.navCtrl.navigateForward('/search'); 
           } else {
             this.showErrorAlert('Rol de usuario no válido.');
           }
