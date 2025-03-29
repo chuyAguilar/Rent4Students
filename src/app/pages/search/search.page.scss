@@ -132,3 +132,9 @@ ion-card-title {
 ion-content {
   --background: #f4f4f9;
 }
+.no-wrap-text ion-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
