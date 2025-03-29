@@ -34,37 +34,37 @@
     <ion-segment [(ngModel)]="filtroTipo" class="custom-segment">
       <ion-segment-button value="casa">
         <ion-icon name="home"></ion-icon>
-        Casa
+        <ion-label>Casa</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="departamento">
+      <ion-segment-button value="departamento" class="no-wrap-text">
         <ion-icon name="business"></ion-icon>
-        Departamento
+        <ion-label>Departamento</ion-label>
       </ion-segment-button>
       <ion-segment-button value="cuarto">
         <ion-icon name="bed"></ion-icon>
-        Cuarto
+        <ion-label>Cuarto</ion-label>
       </ion-segment-button>
     </ion-segment>
 
     <ion-segment [(ngModel)]="filtroUniversidad" class="custom-segment scrollable-segment">
       <ion-segment-button value="">
         <ion-icon name="school"></ion-icon>
-        Todas
+        <ion-label>Todas</ion-label>
       </ion-segment-button>
       <ion-segment-button value="UAQ">
-        UAQ
+        <ion-label>UAQ</ion-label>
       </ion-segment-button>
       <ion-segment-button value="ITQ">
-        ITQ
+        <ion-label>ITQ</ion-label>
       </ion-segment-button>
       <ion-segment-button value="UTEQ">
-        UTEQ
+        <ion-label>UTEQ</ion-label>
       </ion-segment-button>
       <ion-segment-button value="UVM">
-        UVM
+        <ion-label>UVM</ion-label>
       </ion-segment-button>
       <ion-segment-button value="UNAM">
-        UNAM
+        <ion-label>UNAM</ion-label>
       </ion-segment-button>
     </ion-segment>
 
@@ -93,7 +93,6 @@
         </ion-input>
       </div>
     </div>
-
   </div>
 
   <!-- Lista de resultados -->
@@ -107,7 +106,6 @@
       </ion-card-header>
     </ion-card>
 
-
     <ion-card *ngIf="noResults" class="no-results-card">
       <ion-card-header>
         <ion-card-title>No hay propiedades que coincidan con los filtros.</ion-card-title>
@@ -115,3 +113,6 @@
     </ion-card>
   </ion-list>
 </ion-content>
+
+
+ 
